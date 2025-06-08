@@ -17,29 +17,12 @@
 4. 在images文件夹中添加您自己的图片
 5. 使用浏览器打开index.html预览网站
 
-## GitHub Pages部署
-
-要将此网站部署到GitHub Pages，请按照以下步骤操作：
-
-1. 在GitHub上创建一个新仓库
-2. 将所有文件上传到该仓库
-3. 进入仓库的"Settings"页面
-4. 滚动到"GitHub Pages"部分
-5. 在"Source"下拉菜单中选择"main"分支（或您的主分支名称）
-6. 点击"Save"按钮
-7. 等待几分钟，您的网站将在`https://您的用户名.github.io/仓库名称`上可用
-
-注意：
-- 确保所有资源路径使用相对路径（如`./css/style.css`而不是`/css/style.css`）
-- `.nojekyll`文件已添加，以防止GitHub Pages使用Jekyll处理您的网站
-
 ## 文件结构
 
 - `index.html` - 主HTML文件
 - `css/style.css` - 样式表
 - `js/main.js` - JavaScript功能
 - `images/` - 存放图片的文件夹
-- `.nojekyll` - 告诉GitHub不要使用Jekyll处理网站
 
 ## 自定义
 

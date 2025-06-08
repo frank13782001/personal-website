@@ -134,4 +134,126 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('scroll', updateActiveNavLink);
     
     // 不再初始加载时更新
+    
+    // 复制功能
+    function copyToClipboard(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+            // 使用现代的 Clipboard API
+            return navigator.clipboard.writeText(text);
+        } else {
+            // 使用传统方法
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            return new Promise((resolve, reject) => {
+                if (document.execCommand('copy')) {
+                    resolve();
+                } else {
+                    reject();
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+    }
+    
+    // 显示复制成功提示
+    function showCopyToast(element) {
+        // 创建提示元素
+        const toast = document.createElement('div');
+        toast.textContent = '已复制';
+        toast.style.cssText = `
+            position: absolute;
+            background: #f5f5f5;
+            color: #666;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 10000;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            border: 1px solid #e0e0e0;
+        `;
+        
+        // 获取元素位置
+        const rect = element.getBoundingClientRect();
+        toast.style.left = (rect.left + rect.width / 2) + 'px';
+        toast.style.top = (rect.top + window.scrollY - 35) + 'px';
+        toast.style.transform = 'translateX(-50%) translateY(-10px)';
+        
+        document.body.appendChild(toast);
+        
+        // 显示动画
+        setTimeout(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(-50%) translateY(0)';
+        }, 10);
+        
+        // 1.5秒后移除
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(-10px)';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    document.body.removeChild(toast);
+                }
+            }, 300);
+        }, 1500);
+    }
+    
+    // 微信复制功能
+    const wechatCopyBtn = document.querySelector('.copy-wechat');
+    if (wechatCopyBtn) {
+        wechatCopyBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const text = this.getAttribute('data-text');
+            copyToClipboard(text).then(() => {
+                showCopyToast(this);
+            }).catch(() => {
+                showCopyToast(this);
+            });
+        });
+    }
+    
+    // 邮箱复制功能
+    const emailCopyBtn = document.querySelector('.copy-email');
+    if (emailCopyBtn) {
+        emailCopyBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const text = this.getAttribute('data-text');
+            copyToClipboard(text).then(() => {
+                showCopyToast(this);
+            }).catch(() => {
+                showCopyToast(this);
+            });
+        });
+    }
 });
+
+// 文章展开/收起功能
+function toggleArticle(button) {
+    const articleItem = button.closest('.article-item');
+    const preview = articleItem.querySelector('.article-preview');
+    const full = articleItem.querySelector('.article-full');
+    
+    if (full.style.display === 'none' || full.style.display === '') {
+        // 展开
+        preview.style.display = 'none';
+        full.style.display = 'block';
+        button.textContent = '收起';
+    } else {
+        // 收起
+        preview.style.display = 'block';
+        full.style.display = 'none';
+        button.textContent = '更多';
+    }
+}
